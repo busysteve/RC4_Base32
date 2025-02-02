@@ -87,9 +87,9 @@
 		output += base32Chars[(value << (5 - bits)) & 31];
 	    }
 
-	    while (output.length % 8 !== 0) {
-		output += "=";
-	    }
+	    //while (output.length % 8 !== 0) {
+		//output += "=";
+	    //}
 
 	    return output;
 	}
