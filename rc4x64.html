@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RC4x64 Encryption and Decryption with No Encoding</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        textarea, input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RC4x64 Encryption and Decryption with No Encoding</h1>
+
+        <!-- Encryption Section -->
+        <h2>Encrypt Message</h2>
+        <label for="key">Key:</label>
+        <input type="text" id="key" placeholder="Enter your encryption key" value="SECRETKEY" oninput="this.value = this.value.toUpperCase()" >
+
+        <label for="message">Message:</label>
+        <textarea oninput="this.value = this.value.toUpperCase()" id="message" rows="4" placeholder="Enter your message">HELLO, WORLD!</textarea>
+
+        <button onclick="encryptMessage()">Encrypt and Encode to Base32</button>
+        <div class="output">
+            <strong>Encrypted Message (Base32):</strong>
+            <pre id="encryptedOutput"></pre>
+        </div>
+
+        <!-- Decryption Section -->
+        <h2>Decrypt Message</h2>
+        <label for="decryptKey">Key:</label>
+        <input type="text" id="decryptKey" placeholder="Enter your decryption key" value="SECRETKEY" oninput="this.value = this.value.toUpperCase()" >
+
+        <label for="encryptedMessageInput">Encrypted Message (Base32):</label>
+        <textarea id="encryptedMessageInput" rows="4" placeholder="Paste the encrypted message here"></textarea>
+
+        <button onclick="decryptMessage()">Decrypt Message</button>
+        <div class="output">
+            <strong>Decrypted Message:</strong>
+            <pre id="decryptedOutput"></pre>
+        </div>
+    </div>
+
+    <script>
+    
+
+        function rc4x64(secretkey, msg) {
+            
+            
+            data = [];
+            
+            for( let x=0; x < msg.length; x++ )
+            	{
+            		data.push( msg.charCodeAt(x) - 32 );
+            	}
+        
+            key = [];
+            
+            for( let x=0; x < secretkey.length; x++ )
+            	{
+            		key.push( secretkey.charCodeAt(x) - 32 );
+            	}
+        
+            // Key-scheduling algorithm (KSA)
+            let s = [];
+            for (let i = 0; i < 64; i++) {
+                s[i] = i;
+            }
+
+            let j = 0;
+            for (let i = 0; i < 64; i++) {
+                j = (j + s[i] + key[(i % key.length)]) % 64;
+                [s[i], s[j]] = [s[j], s[i]]; // Swap s[i] and s[j]
+            }
+
+            // Pseudo-random generation algorithm (PRGA)
+            let i = 0;
+            j = 0;
+            let result = '';
+
+            for (let k = 0; k < data.length; k++) {
+                i = (i + 1) % 64;
+                j = (j + s[i]) % 64;
+                [s[i], s[j]] = [s[j], s[i]]; // Swap s[i] and s[j]
+                const keystreamByte = s[(s[i] + s[j]) % 64];
+                result += String.fromCharCode(  ( ( data[(k)] ) ^ keystreamByte )  + 32 );
+                
+                //console.log( data[k] , " -->  " , data[(k)] , "  " , keystreamByte , " = " , ( data[(k)] ) ^ keystreamByte, " -- " , result[k] );
+            }
+
+            return result;
+        }
+
+        // Encrypt Message and Encode to Base36
+        function encryptMessage() {
+            const key = document.getElementById('key').value;
+            const message = document.getElementById('message').value;
+
+            if (!key || !message) {
+                alert("Please provide a key and a message.");
+                return;
+            }
+
+            const encrypted = rc4x64(key, message);
+
+            document.getElementById('encryptedOutput').textContent = encrypted.replaceAll( " ", "~" );
+        }
+
+        // Decrypt Base36 Encoded Message
+        function decryptMessage() {
+            const key = document.getElementById('decryptKey').value;
+            encryptedMessage = document.getElementById('encryptedMessageInput').value;
+
+	    encryptedMessage = encryptedMessage.replaceAll( "~", " " )
+	    
+            if (!key || !encryptedMessage) {
+                alert("Please provide a key and an encrypted message.");
+                return;
+            }
+
+            //const encrypted = base32Decode(encryptedMessageBase32);
+            const decrypted = rc4x64(key, encryptedMessage);
+
+            document.getElementById('decryptedOutput').textContent = decrypted;
+        }
+    </script>
+</body>
+</html>
