@@ -40,7 +40,7 @@
         <label for="message">Message:</label>
         <textarea oninput="this.value = this.value.toUpperCase()" id="message" rows="4" placeholder="Enter your message">HELLO, WORLD!</textarea>
 
-        <button onclick="encryptMessage()">Encrypt and Encode to Base32</button>
+        <button onclick="encryptMessage()">Encrypt/Decrypt</button>
         <div class="output">
             <strong>Encrypted Message (Base32):</strong>
             <pre id="encryptedOutput"></pre>
@@ -54,7 +54,7 @@
         <label for="encryptedMessageInput">Encrypted Message (Base32):</label>
         <textarea id="encryptedMessageInput" rows="4" placeholder="Paste the encrypted message here"></textarea>
 
-        <button onclick="decryptMessage()">Decrypt Message</button>
+        <button onclick="decryptMessage()">Encrypt/Decrypt</button>
         <div class="output">
             <strong>Decrypted Message:</strong>
             <pre id="decryptedOutput"></pre>
