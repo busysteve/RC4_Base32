@@ -86,7 +86,7 @@
                 i = (i + 1) % 64;
                 j = (j + s[i]) % 64;
                 [s[i], s[j]] = [s[j], s[i]]; // Swap s[i] and s[j]
-                const keystreamByte = s[(s[i] + s[j]) % 64];
+                keystreamByte = s[(s[i] + s[j]) % 64];
                 result += String.fromCharCode(  ( ( data[(k)] ) ^ keystreamByte )  + 32 );
                 
                 //console.log( data[k] , " -->  " , data[(k)] , "  " , keystreamByte , " = " , ( data[(k)] ) ^ keystreamByte, " -- " , result[k] );
@@ -97,17 +97,17 @@
 
         // Encrypt Message and Encode to Base36
         function encryptMessage() {
-            const key = document.getElementById('key').value;
-            const message = document.getElementById('message').value;
+            key = document.getElementById('key').value;
+            message = document.getElementById('message').value;
 
             if (!key || !message) {
                 alert("Please provide a key and a message.");
                 return;
             }
 
-            const encrypted = rc4x64(key, message);
+            encrypted = rc4x64(key, message);
 
-            document.getElementById('message').textContent = encrypted; //.replaceAll( " ", "~" );
+            document.getElementById('message').value = encrypted; //.replaceAll( " ", "~" );
         }
 
     </script>
