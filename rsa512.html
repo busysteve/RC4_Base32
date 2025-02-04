@@ -35,7 +35,7 @@
 </head>
 <body>
     <h1>RSA 512-bit Encryption with Forge</h1>
-    <textarea id="inputText" placeholder="Enter text to encrypt"></textarea>
+    <textarea id="inputText" placeholder="Enter text to encrypt or decrypt" on_input="this.value = this.value.toUpperCase();"></textarea>
     <button onclick="generateKeys()">Generate Keys</button>
     <button onclick="encrypt()">Encrypt</button>
     <button onclick="decrypt()">Decrypt</button>
@@ -46,7 +46,9 @@
     <h2>Private Key</h2>
     <textarea id="privateKey" class="key" placeholder="Private Key (PEM format)"></textarea>
 
-    <div class="output" id="output"></div>
+    <h2>Output</h2>
+	<textarea class="key" id="output" placeholder="Encrypt/Decryption Output"></textarea>
+    <!--div class="output" id="output"></div -->
 
     <script>
         let keyPair;
@@ -87,17 +89,17 @@
 
                 // Convert encrypted data to base64 for display
                 const encryptedBase64 = forge.util.encode64(encryptedData);
-                document.getElementById('output').innerText = `Encrypted: ${encryptedBase64}`;
+                document.getElementById('output').value = `${encryptedBase64}`;
             } catch (error) {
                 console.error('Encryption failed:', error);
-                document.getElementById('output').innerText = 'Encryption failed. Check the public key.';
+                document.getElementById('output').value = 'Encryption failed. Check the public key.';
             }
         }
 
         // Decrypt function
         function decrypt() {
             const privateKeyPem = document.getElementById('privateKey').value;
-            const encryptedBase64 = document.getElementById('output').innerText.replace('Encrypted: ', '');
+            const encryptedBase64 = document.getElementById('inputText').value;
 
             if (!privateKeyPem || !encryptedBase64) {
                 alert('Please provide a private key and ensure encrypted data is available.');
@@ -116,10 +118,10 @@
                     md: forge.md.sha1.create(), // Use SHA-1 for OAEP
                 });
 
-                document.getElementById('output').innerText = `Decrypted: ${decryptedData}`;
+                document.getElementById('output').value = `${decryptedData}`;
             } catch (error) {
                 console.error('Decryption failed:', error);
-                document.getElementById('output').innerText = 'Decryption failed. Check the private key.';
+                document.getElementById('output').value = 'Decryption failed. Check the private key.';
             }
         }
     </script>
